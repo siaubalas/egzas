@@ -8,13 +8,13 @@ import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Task;
-import model.User;
-import view.Dashboard;
+
+
 
 public class TaskDao {
 
     public void addElement(Task task) throws MySQLIntegrityConstraintViolationException{
-        String sql = "INSERT INTO `tasks`(`user`, `title`, `description`, `status`) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO `atsiliepimai`(`miestas`, `vardas`, `atsiliepimas`, `epastas`) VALUES (?, ?, ?, ?)";
         try {
           Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "root", "");
           PreparedStatement add = myConn.prepareStatement(sql);
@@ -33,14 +33,11 @@ public class TaskDao {
         }
     }
 
-    public void showElements(ObservableList<Task> data, User user) {
+    public void showElements(ObservableList<Task> data) {
         String query = "";
-        if(user.getUserlevel() == 9){
-            query = "SELECT * FROM tasks";
-        }else{
-            String username = user.getUsername();
-            query = "SELECT * FROM tasks WHERE user LIKE '"+ username +"'";
-        }
+
+            query = "SELECT * FROM atsiliepimai";
+
         try {
             Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "root", "");
             PreparedStatement add = myConn.prepareStatement(query);
@@ -48,10 +45,10 @@ public class TaskDao {
             while(rs.next()) {
                 data.add(new Task(
                         rs.getInt("id"),
-                        rs.getString("user"),
-                        rs.getString("title"),
-                        rs.getString("description"),
-                        rs.getString("status")));
+                        rs.getString("vardas"),
+                        rs.getString("miestas"),
+                        rs.getString("epastas"),
+                        rs.getString("atsiliepimas")));
             }
 
         } catch(Exception exc) {
@@ -63,7 +60,7 @@ public class TaskDao {
     public void updateElement(Task task) {
         try {
             Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "root", "");
-            PreparedStatement upd = myConn.prepareStatement("UPDATE tasks SET user = ?, title = ?, description = ?, status = ? WHERE id = ?");
+            PreparedStatement upd = myConn.prepareStatement("UPDATE atsiliepimai SET miestas = ?, vardas = ?, atsiliepimas = ?, epastas = ? WHERE id = ?");
             upd.setString(1, task.getUser());
             upd.setString(2, task.getTitle());
             upd.setString(3, task.getDescription());
@@ -77,23 +74,10 @@ public class TaskDao {
         }
     }
 
-    public void updateUserTask(Task task) {
-        try {
-            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "root", "");
-            PreparedStatement upd = myConn.prepareStatement("UPDATE tasks SET status = ? WHERE id = ?");
-            upd.setString(1, task.getStatus());
-            upd.setInt(2, task.getId());
-            upd.executeUpdate();
-            upd.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-    }
     public void deletePokemonai(int id) {
         try {
             Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "root", "");
-            PreparedStatement del = myConn.prepareStatement("DELETE FROM tasks WHERE id = ?");
+            PreparedStatement del = myConn.prepareStatement("DELETE FROM atsiliepimai WHERE id = ?");
             del.setInt(1, id);
             del.executeUpdate();
         } catch(Exception e) {
@@ -103,16 +87,14 @@ public class TaskDao {
     }
 
 
-    public ObservableList<Task> searchElementByTitle(String pavadinimas, User user){
+    public ObservableList<Task> searchElementByTitle(String pavadinimas){
         String sql = "";
-        if (pavadinimas.isEmpty() && user.getUserlevel() == 9) {
-            sql = "Select * FROM tasks";
+        if (pavadinimas.isEmpty()) {
+            sql = "Select * FROM atsiliepimai";
         } else if (pavadinimas.isEmpty()) {
-            sql = "Select * FROM tasks WHERE user ='"+ user.getUsername() +"'";
-        } else if(!pavadinimas.isEmpty() && user.getUserlevel() == 9){
-            sql = "Select * FROM tasks WHERE title LIKE '%" + pavadinimas + "%'";
-        } else {
-            sql = "Select * FROM tasks WHERE title LIKE '%" + pavadinimas + "%' AND user ='"+ user.getUsername() +"'";
+            sql = "Select * FROM atsiliepimai WHERE user ='";
+        }else {
+            sql = "Select * FROM atsiliepimai WHERE title LIKE '%" + pavadinimas;
         }
 
 

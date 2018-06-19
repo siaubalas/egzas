@@ -25,67 +25,60 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import model.Task;
-import model.User;
 
-public class AdminDashboard {
+
+public class DashB {
 
     private BorderPane bpRoot;
     private Stage primaryStage;
-    private User user;
+
     private GridPane DashboardPane2;
     private TextField tfId;
     private TextField tfUser;
     private TextField tfTitle;
     private TextArea tfDescription;
-    private RadioButton rbToDo;
-    private RadioButton rbDone;
-    private ToggleGroup tgStatus;
-    private RadioButton selectedRadioButton;
+    private TextField rbToDo;
+
+  
 
 
 
-    AdminDashboard(Stage primaryStage, User user) {
+    public DashB(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         this.bpRoot = new BorderPane();
         Scene scene = new Scene(this.bpRoot, 980, 400);
 
-        this.primaryStage = primaryStage;
-        this.user = user;
+
+  
         this.primaryStage.setScene(scene);
         this.primaryStage.setTitle("Task Admin System");
         scene.getStylesheets().add(getClass().getResource("../view/style.css").toExternalForm());
         this.primaryStage.setResizable(false);
         this.primaryStage.centerOnScreen();
         addElementsToScene();
-        this.primaryStage.show();
+        primaryStage.show();
     }
 
 
 	private void addElementsToScene() {
 		Label lbId = new Label("Id: ");
-        Label lbUser = new Label("User: ");
-        Label lbTitle = new Label("Title: ");
-        Label lbDescription = new Label("Description: ");
-        Label lbStatus = new Label("Status: ");
-        Label lbUsername = new Label("Logged In");
+        Label lbUser = new Label("Miestas: ");
+        Label lbTitle = new Label("Vardas: ");
+        Label lbDescription = new Label("Atsiliepimas: ");
+        Label lbStatus = new Label("Epastas: ");
+        Label lbUsername = new Label("ATSILIEPIMAI");
         lbUsername.setMinWidth(80);
-        Label lbUsernameCurrent = new Label();
-        lbUsernameCurrent.setText(user.getUsername());
+   
 
-	this.tfId = new TextField();
+        this.tfId = new TextField();
         this.tfUser = new TextField();
         this.tfTitle = new TextField();
         this.tfDescription = new TextArea();
         tfDescription.setPrefHeight(60);
-        this.rbToDo = new RadioButton();
-        this.rbDone = new RadioButton();
-        this.tgStatus = new ToggleGroup();
+        this.rbToDo = new TextField();
 
-        rbDone.setText("Done ");
-        rbToDo.setText("To Do ");
 
-        rbToDo.setToggleGroup(tgStatus);
-        rbDone.setToggleGroup(tgStatus);
-        rbToDo.setSelected(true);
+
 
         Button btnAdd = new Button("Add");
         btnAdd.setMinWidth(60);
@@ -93,10 +86,8 @@ public class AdminDashboard {
         btnDelete.setMinWidth(80);
         Button btnUpdate = new Button("Update");
         btnUpdate.setMinWidth(80);
-        Button btnSearch = new Button("Search");
-        btnSearch.setMinWidth(80);
-        Button btnLog = new Button("Log out");
-        btnLog.setMinWidth(80);
+
+
 
 
         TableView ItemTable = new TableView();
@@ -106,19 +97,19 @@ public class AdminDashboard {
         IdCol.setCellValueFactory(new PropertyValueFactory<Task, Integer>("id"));
         IdCol.setMinWidth(10);
 
-        TableColumn UserCol = new TableColumn("User");
+        TableColumn UserCol = new TableColumn("Miestas");
         UserCol.setCellValueFactory(new PropertyValueFactory<Task, String>("user"));
         UserCol.setMinWidth(50);
 
-        TableColumn TitleCol = new TableColumn("Title");
+        TableColumn TitleCol = new TableColumn("Vardas");
         TitleCol.setCellValueFactory(new PropertyValueFactory<Task, String>("title"));
         TitleCol.setMinWidth(100);
 
-        TableColumn DescriptionCol = new TableColumn("Description");
+        TableColumn DescriptionCol = new TableColumn("Epastas");
         DescriptionCol.setCellValueFactory(new PropertyValueFactory<Task, Integer>("description"));
         DescriptionCol.setMinWidth(40);
 
-        TableColumn StatusCol = new TableColumn("Status");
+        TableColumn StatusCol = new TableColumn("Atsiliepimas");
         StatusCol.setCellValueFactory(new PropertyValueFactory<Task, String>("status"));
         StatusCol.setMinWidth(40);
 
@@ -126,7 +117,7 @@ public class AdminDashboard {
 
         ObservableList<Task> data = FXCollections.observableArrayList();
         TaskDao TaskDao = new TaskDao();
-        TaskDao.showElements(data, user);
+        TaskDao.showElements(data);
         ItemTable.setItems(data);
 
         GridPane gpItemButtons = new GridPane();
@@ -137,13 +128,11 @@ public class AdminDashboard {
         gpItemButtons.setHgap(20);
         gpItemButtons.setPadding(new Insets(10, 10, 10, 0));
         
-        GridPane gpStatus = new GridPane();
-        gpStatus.add(rbToDo, 1, 1);
-        gpStatus.add(rbDone, 3, 1);
+
         
         this.DashboardPane2 = new GridPane();
         DashboardPane2.add(lbUsername, 0, 0);
-        DashboardPane2.add(lbUsernameCurrent, 1, 0);
+      
         DashboardPane2.add(lbId, 0, 8);
         DashboardPane2.add(gpItemButtons, 1, 8);
         DashboardPane2.add(btnUpdate, 2, 8);
@@ -151,15 +140,15 @@ public class AdminDashboard {
         DashboardPane2.add(tfUser, 1, 2);
         DashboardPane2.add(lbTitle, 0, 3);
         DashboardPane2.add(tfTitle, 1, 3);
-        DashboardPane2.add(btnSearch, 2, 3);
-        DashboardPane2.add(lbDescription, 0, 5);
-        DashboardPane2.add(tfDescription, 1, 5);
-        DashboardPane2.add(lbStatus, 0, 6);
-        DashboardPane2.add(gpStatus, 1, 6);
+
+        DashboardPane2.add(lbDescription, 0, 6);
+        DashboardPane2.add(tfDescription, 1, 6);
+        DashboardPane2.add(lbStatus, 0, 5);
+        DashboardPane2.add(rbToDo, 1, 5);
 
 
         DashboardPane2.add(btnAdd, 1, 7);
-        DashboardPane2.add(btnLog, 2, 10);
+
         DashboardPane2.setPadding(new Insets(10, 10, 10, 10));
         DashboardPane2.setVgap(10);
         DashboardPane2.setHgap(10);
@@ -180,7 +169,7 @@ public class AdminDashboard {
                             tfUser.getText().toString(),
                             tfTitle.getText().toString(),
                             tfDescription.getText().toString(),
-                            selectedRadioButton.getText().toString());
+                            rbToDo.getText().toString());
                     try {
                         TaskDao.addElement(uzduotis);
                     } catch (MySQLIntegrityConstraintViolationException e) {
@@ -189,7 +178,7 @@ public class AdminDashboard {
 
                     ItemTable.getItems().clear();
 
-                    TaskDao.showElements(data, user);
+                    TaskDao.showElements(data);
                 }
             }
 
@@ -210,7 +199,7 @@ public class AdminDashboard {
 
                         TaskDao.deletePokemonai(Integer.parseInt(tfId.getText()));
                         ItemTable.getItems().clear();
-                        TaskDao.showElements(data, user);
+                        TaskDao.showElements(data);
                     }
                 }
 
@@ -220,26 +209,9 @@ public class AdminDashboard {
             }
         });
 
-        btnLog.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event){
-                Login login = new Login(primaryStage);
-            }
-        });
 
-        btnSearch.setOnAction(new EventHandler<ActionEvent>(){
-            private ObservableList<Task> data;
-            @Override
-            public void handle(ActionEvent event){
-                data = TaskDao.searchElementByTitle(tfTitle.getText().toString(),user);
-                ItemTable.getItems().clear();
-                ItemTable.setItems(data);
 
-                if (data.size() == 0) {
-                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "No such task!");
-                }
-            }
-        });
+
 
 
 
@@ -253,7 +225,7 @@ public class AdminDashboard {
                             tfUser.getText().toString(),
                             tfTitle.getText().toString(),
                             tfDescription.getText().toString(),
-                            selectedRadioButton.getText().toString());
+                            rbToDo.getText().toString());
 
                     boolean IsExistingEntryIdByUser = false;
 
@@ -265,7 +237,7 @@ public class AdminDashboard {
                             IsExistingEntryIdByUser = true;
                             TaskDao.updateElement(kvepalas);
                             ItemTable.getItems().clear();
-                            TaskDao.showElements(data, user);
+                            TaskDao.showElements(data);
 
                         }
                     }
@@ -278,33 +250,11 @@ public class AdminDashboard {
             }
         });
 
-        btnSearch.setOnAction(new EventHandler<ActionEvent>(){
-            private ObservableList<Task> data;
-            @Override
-            public void handle(ActionEvent event){
-//                data = ItemDao.searchElementsByName
-//                        (RsnText.getText().toString(), user);
-//                table.getItems().clear();
-//                table.setItems(data);
-                data = TaskDao.searchElementByTitle(tfTitle.getText().toString(),user);
-                ItemTable.getItems().clear();
-                ItemTable.setItems(data);
 
-                if (data.size() == 0) {
-                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "no such task!");
-                }
-            }
-        });
 
-        btnLog.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event){
-                Login login = new Login(primaryStage);
-            }
-        });
+
         btnAdd.setId("button");
         btnDelete.setId("button");
-        btnSearch.setId("button");
 
         btnUpdate.setId("button");
         DashboardPane2.setId("background");
@@ -324,16 +274,17 @@ public class AdminDashboard {
                     showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Neteisingas ID formatas");
                     return false;
                 } else */if (!Validation.isValidRsnForAdd(tfUser.getText().toString())) {
-                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Invalid User");
+                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Invalid Name");
                     return false;
                 } else if (!Validation.isValidRsnForAdd(tfTitle.getText().toString())) {
-                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Invalid Task");
+                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Invalid City");
                     return false;
                 } else if(!Validation.isValidRsnForAdd(tfDescription.getText().toString())){
                     showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Invalid Description");
                     return false;
-                }else {
-                    this.selectedRadioButton = (RadioButton)tgStatus.getSelectedToggle();
+                } else if(!Validation.isValidEmail(rbToDo.getText().toString())){
+                    showAlert(Alert.AlertType.ERROR, DashboardPane2.getScene().getWindow(), "Form Klaida!", "Invalid Email");
+                    return false;
                 }
         }
         return true;
